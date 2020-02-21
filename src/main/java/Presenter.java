@@ -5,6 +5,7 @@ import javafx.scene.control.ComboBox;
 import javafx.event.ActionEvent;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Presenter implements Initializable {
@@ -20,14 +21,21 @@ public class Presenter implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        start.getItems().addAll(dijkstra.getNodes().toString());
-        destination.getItems().addAll(dijkstra.getNodes().toString());
+        // todo: convert to string list
+        List<Node> nodes = network.getNodes();
+        start.getItems().addAll(nodes);
+        destination.getItems().addAll(nodes);
 
         submit.setOnAction(this::submitButtonHandler);
     }
 
     public void submitButtonHandler(ActionEvent actionEvent) {
-        dijkstra.setStart(dijkstra.getNodeByName(start.getValue()));
-        dijkstra.setDestination(dijkstra.getNodeByName(destination.getValue()));
+        String start = this.start.getValue();
+        String destination = this.destination.getValue();
+
+        start = "Cham";
+        destination = "Malters";
+
+        dijkstra.run(start, destination);
     }
 }

@@ -9,34 +9,42 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class Dijkstra extends Application {
-    private Network network;
-    private List<Node> unvisited = new ArrayList<>(createUnvisited());
+public class Dijkstra  {
     private final int infinite = 9999;
-    private Node start; //= network.getNodeByName("Cham");
-    private Node destination; //= network.getNodeByName("Malters");
+    private Network network;
+    private List<Node> unvisited;
+    private Node start; ;
+    private Node destination;
     private Node currentNode;
-    private List<Node> nodes = network.getNodes();
+    private List<Node> nodes;
     private StringProperty route = new SimpleStringProperty("foo");
 
-    public static void main(String[] args) {
-        launch(args);
+    public Dijkstra(Network network) {
+        this.network = network;
+        nodes = network.getNodes();
     }
 
-    private void run() {
+    public void run(String startName, String destinationName) {
+        this.start = network.getNodeByName(startName);
+        this.destination = network.getNodeByName(destinationName);
+        createUnvisited();
+
+        System.out.println("From: " + startName + " To: " + destinationName);
+
         // Schritt 2
-        for(Node i: nodes){
+        for (Node i : nodes) {
             i.setCurrentDistance(infinite);
         }
+
         start.setCurrentDistance(0);
         currentNode = start;
 
         // Schritt 3
         List<Node> neighbours = start.getNeighbours();
-        for (Node i : neighbours){
+        for (Node i : neighbours) {
             int tempDistance;
-            tempDistance = network.getDistance(currentNode,i);
-            if (tempDistance < currentNode.getCurrentDistance()){
+            tempDistance = network.getDistance(currentNode, i);
+            if (tempDistance < currentNode.getCurrentDistance()) {
                 currentNode.setCurrentDistance(tempDistance);
                 i.setPredecessor(currentNode);
             }
@@ -47,66 +55,14 @@ public class Dijkstra extends Application {
         unvisited.remove(currentNode);
 
         // Schritt 5
-        for (Node i: unvisited){
+        for (Node i : unvisited) {
             int temp = i.getCurrentDistance();
 
 
-
         }
     }
 
-    private void loadDistances() {
-        try {
-            network = new Network("Distanzen.csv");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private List<Node> createUnvisited() {
-        unvisited = network.getNodes();
-        return unvisited;
-    }
-
-    public List<Node> getNodes(){
-        return network.getNodes();
-    }
-
-    public void setStart(Node start){
-        this.start = start;
-    }
-
-    public void setDestination(Node destination){
-        this.destination = destination;
-    }
-
-    public Node getNodeByName(String name){
-        return network.getNodeByName(name);
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Dijkstra dijkstra = new Dijkstra();
-        dijkstra.loadDistances();
-        dijkstra.run();
-
-        Presenter presenter = new Presenter(dijkstra);
-
-        FXMLLoader loader= new FXMLLoader(getClass().getResource("view.fxml"));
-        loader.setController(presenter);
-        GridPane root = loader.load();
-
-        initScene(primaryStage, root);
-
-        primaryStage.setTitle("Dijkstra");
-
-        primaryStage.show();
-    }
-
-    private void initScene(Stage primaryStage, GridPane root){
-        final int width = 300;
-        final int height = 300;
-        Scene scene = new Scene(root, width, height);
-        primaryStage.setScene(scene);
+    private void createUnvisited() {
+        unvisited = new ArrayList<>(network.getNodes());
     }
 }
